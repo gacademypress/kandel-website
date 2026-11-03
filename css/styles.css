@@ -1,0 +1,144 @@
+/* ==========================================================
+   Penerbit Kandel (kandel.co.id) - Style Definition
+   Inspired by Pitch Publishing, GPU.id, & Mizan
+   ========================================================== */
+
+:root {
+  --primary: #1a365d;        /* Deep Academic Navy */
+  --primary-light: #2b4c7e;
+  --accent: #c05621;         /* Warm Terracotta / Amber */
+  --accent-hover: #9c4221;
+  --bg-cream: #faf9f6;       /* Warm Bookpaper Tone */
+  --card-bg: #ffffff;
+  --text-main: #1f2937;
+  --text-muted: #6b7280;
+  --border-light: #e5e7eb;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-cream);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Serif headings for book publishing aesthetic */
+h1, h2, h3, .font-serif-book {
+  font-family: 'Merriweather', 'Georgia', serif;
+}
+
+/* Book Cover 3D Illusion & Hover Effect */
+.book-cover-wrap {
+  position: relative;
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0.2, 1), box-shadow 0.3s ease;
+  transform-origin: center left;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: -4px 6px 16px rgba(0, 0, 0, 0.12), -1px 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.book-cover-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 14px;
+  background: linear-gradient(to right, rgba(0,0,0,0.25) 0%, rgba(255,255,255,0.15) 50%, rgba(0,0,0,0.05) 100%);
+  pointer-events: none;
+}
+
+.book-card:hover .book-cover-wrap {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: -6px 14px 24px rgba(0, 0, 0, 0.18), -2px 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Sliders */
+.slider-container {
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.slider-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Badge styling */
+.badge-new {
+  background-color: #047857;
+  color: white;
+}
+.badge-bestseller {
+  background-color: #b45309;
+  color: white;
+}
+
+/* Specification Table Grid */
+.spec-row {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.5;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+.spec-row:last-child {
+  border-bottom: none;
+}
+.spec-label {
+  width: 140px;
+  flex-shrink: 0;
+  font-weight: 500;
+  color: #64748b; /* Slate 500 */
+}
+.spec-value {
+  color: #1e293b; /* Slate 800 */
+  font-weight: 500;
+  flex-grow: 1;
+}
+
+/* Modal animation */
+.modal-backdrop {
+  backdrop-filter: blur(4px);
+  background-color: rgba(15, 23, 42, 0.6);
+}
+
+/* Line clamp helpers */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Admin Bar */
+.admin-bar {
+  background: #0f172a;
+  color: #e2e8f0;
+}

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Penerbit Kandel | Buku & Alat Peraga Edukasi</title>
+  
+  <!-- Favicon / Meta -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
+  <meta name="description" content="Penerbit Kandel - Penerbit Buku Cetakan dan Alat Peraga Edukasi Berkualitas di OnePM Building, Gading Serpong, Tangerang.">
+
+  <!-- Google Fonts: Merriweather & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Merriweather', 'Georgia', 'serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            kandel: {
+              navy: '#1a365d',
+              dark: '#0f172a',
+              gold: '#c05621',
+              cream: '#faf9f6'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-[#faf9f6] text-slate-800 antialiased flex flex-col min-h-screen">
+
+  <!-- TOP ADMIN BAR (VISIBLE WHEN LOGGED IN) -->
+  <div id="admin-status-bar" class="hidden bg-slate-900 text-slate-200 text-xs py-2 px-4 border-b border-amber-600/40">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="font-medium text-amber-300">Mode Admin Aktif</span>
+        <span class="text-slate-400">| Anda dapat menambah, mengedit, dan menghapus postingan katalog.</span>
+      </div>
+      <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+        <button onclick="openAddBookModal()" class="px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded font-semibold flex items-center gap-1.5 transition">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+          + Tambah Buku
+        </button>
+        <button onclick="downloadDatabaseJSON()" title="Download seluruh database postingan buku, author, dan konten website (JSON)" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 rounded flex items-center gap-1 transition">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+          Download Database
+        </button>
+        <button onclick="triggerRestoreDatabase()" title="Pulihkan data katalog dari file cadangan JSON" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-sky-400 border border-slate-700 rounded flex items-center gap-1 transition">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l4-4m0 0l4 4m-4-4v12"></path></svg>
+          Restore Database
+        </button>
+        <button onclick="downloadUpdatedDataJs()" title="Download file data.js terbaru untuk di-upload ke GitHub" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 rounded flex items-center gap-1 transition">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+          Update data.js (GitHub)
+        </button>
+        <input type="file" id="db-restore-file-input" accept=".json" class="hidden" onchange="handleRestoreDatabaseFile(event)" />
+        <button onclick="resetDataToDefault()" class="px-2.5 py-1 text-slate-400 hover:text-white transition">
+          Reset Data Awal
+        </button>
+        <button onclick="handleAdminLogout()" class="px-2.5 py-1 text-rose-400 hover:text-rose-300 underline font-medium transition">
+          Logout
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER NAVIGATION -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-200/80 shadow-2xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        
+        <!-- Logo Kandel -->
+        <a href="#/home" class="flex items-center group py-2" title="Penerbit Kandel (kandel.co.id)">
+          <img src="assets/kandel-logo.png" alt="Penerbit Kandel" class="h-11 sm:h-12 w-auto object-contain transition-transform duration-200 group-hover:scale-105" />
+        </a>
+
+        <!-- Desktop Navigation: Home, Catalogue, Authors, Join Us, About Us, Login -->
+        <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+          <a href="#/home" data-route="home" class="nav-link py-2 transition text-gray-700 hover:text-amber-700">Home</a>
+          <a href="#/catalogue" data-route="catalogue" class="nav-link py-2 transition text-gray-700 hover:text-amber-700">Catalogue</a>
+          <a href="#/authors" data-route="authors" class="nav-link py-2 transition text-gray-700 hover:text-amber-700">Authors</a>
+          <a href="#/join-us" data-route="join-us" class="nav-link py-2 transition text-gray-700 hover:text-amber-700">Join Us</a>
+          <a href="#/about-us" data-route="about-us" class="nav-link py-2 transition text-gray-700 hover:text-amber-700">About Us</a>
+          
+          <!-- Login Button -->
+          <a href="#/login" id="nav-login-btn" class="px-4 py-2 rounded-lg border border-slate-300 hover:border-slate-800 text-slate-800 hover:bg-slate-900 hover:text-white transition duration-200 font-semibold text-xs uppercase tracking-wider">
+            Login
+          </a>
+        </nav>
+
+        <!-- Mobile Menu Hamburger -->
+        <button id="mobile-menu-btn" class="md:hidden p-2 rounded-lg text-gray-600 hover:text-slate-900 hover:bg-gray-100">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+      </div>
+
+      <!-- Mobile Dropdown Navigation -->
+      <div id="mobile-nav" class="hidden md:hidden pb-4 pt-2 border-t border-gray-100 space-y-2">
+        <a href="#/home" data-route="home" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-amber-50 hover:text-amber-700">Home</a>
+        <a href="#/catalogue" data-route="catalogue" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-amber-50 hover:text-amber-700">Catalogue</a>
+        <a href="#/authors" data-route="authors" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-amber-50 hover:text-amber-700">Authors</a>
+        <a href="#/join-us" data-route="join-us" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-amber-50 hover:text-amber-700">Join Us</a>
+        <a href="#/about-us" data-route="about-us" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-amber-50 hover:text-amber-700">About Us</a>
+        <a href="#/login" class="block px-3 py-2 rounded-md text-base font-bold text-amber-700 hover:bg-amber-50">Login</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN APP CONTAINER (ROUTED DYNAMICALLY) -->
+  <main id="app" class="flex-grow">
+    <!-- Dynamic Content Injected Here -->
+  </main>
+
+  <!-- FOOTER (OVERALL: 3 KOLOM TANPA BORDER) -->
+  <!-- 
+    1. Logo Kandel. Di bawah Logo Kandel ada Alamat Kandel di OnePM Building, Gading Serpong, Tangerang.
+    2. Ada 4 hal yang bisa di klik juga, menampilkan Home, Catalogue, Join Us, About Us.
+    3. Ikuti Kami. Lalu ada 3 logo Facebook, Instagram, YouTube. Link menyusul.
+  -->
+  <footer class="bg-white text-slate-700 pt-16 pb-12 mt-20 border-t border-gray-200/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- 3 Kolom Tanpa Border -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-14">
+        
+        <!-- KOLOM 1: Logo Kandel + Alamat -->
+        <div class="space-y-4">
+          <a href="#/home" class="inline-block" title="Penerbit Kandel">
+            <img src="assets/kandel-logo.png" alt="Penerbit Kandel" class="h-12 sm:h-14 w-auto object-contain" />
+          </a>
+          
+          <div class="text-sm text-gray-600 leading-relaxed pt-1">
+            <p class="font-medium text-slate-900">OnePM Building</p>
+            <p>Gading Serpong, Tangerang</p>
+            <p class="mt-1 text-xs text-gray-500">Situs Resmi: <a href="https://kandel.co.id" class="text-amber-700 hover:underline">kandel.co.id</a></p>
+          </div>
+        </div>
+
+        <!-- KOLOM 2: 4 Hal yang Bisa Diklik (Home, Catalogue, Join Us, About Us) -->
+        <div>
+          <h3 class="text-xs uppercase font-bold tracking-widest text-slate-900 mb-4">Navigasi Utama</h3>
+          <ul class="space-y-2.5 text-sm">
+            <li>
+              <a href="#/home" class="text-gray-600 hover:text-amber-700 transition flex items-center gap-2">
+                <span>&bull;</span> Home
+              </a>
+            </li>
+            <li>
+              <a href="#/catalogue" class="text-gray-600 hover:text-amber-700 transition flex items-center gap-2">
+                <span>&bull;</span> Catalogue
+              </a>
+            </li>
+            <li>
+              <a href="#/join-us" class="text-gray-600 hover:text-amber-700 transition flex items-center gap-2">
+                <span>&bull;</span> Join Us
+              </a>
+            </li>
+            <li>
+              <a href="#/about-us" class="text-gray-600 hover:text-amber-700 transition flex items-center gap-2">
+                <span>&bull;</span> About Us
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- KOLOM 3: Ikuti Kami (3 Logo: Facebook, Instagram, YouTube - Link Menyusul) -->
+        <div>
+          <h3 class="text-xs uppercase font-bold tracking-widest text-slate-900 mb-4">Ikuti Kami</h3>
+          <p class="text-xs text-gray-500 mb-4">
+            Terhubung dengan media sosial kami untuk berita rilis buku baru dan demonstrasi alat peraga edukasi.
+          </p>
+          <div class="flex items-center gap-4">
+            <!-- Facebook Logo -->
+            <a href="javascript:void(0)" title="Facebook Kandel (Link Menyusul)" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-[#1877F2] hover:text-white text-slate-700 flex items-center justify-center transition shadow-2xs">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+            </a>
+
+            <!-- Instagram Logo -->
+            <a href="javascript:void(0)" title="Instagram Kandel (Link Menyusul)" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-gradient-to-tr hover:from-yellow-400 hover:via-pink-500 hover:to-purple-600 hover:text-white text-slate-700 flex items-center justify-center transition shadow-2xs">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              </svg>
+            </a>
+
+            <!-- YouTube Logo -->
+            <a href="javascript:void(0)" title="YouTube Kandel (Link Menyusul)" class="w-10 h-10 rounded-full bg-slate-100 hover:bg-[#FF0000] hover:text-white text-slate-700 flex items-center justify-center transition shadow-2xs">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+              </svg>
+            </a>
+          </div>
+          <span class="text-[11px] text-gray-400 block mt-2">Link resmi menyusul</span>
+        </div>
+
+      </div>
+
+      <!-- Copyright -->
+      <div class="mt-12 pt-6 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-400">
+        <p>&copy; 2026 Penerbit Kandel (kandel.co.id). Hak cipta dilindungi undang-undang.</p>
+        <p class="mt-2 sm:mt-0">OnePM Building, Gading Serpong, Tangerang</p>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
